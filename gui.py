@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+
 import os
 import sys
 import time
@@ -17,6 +21,7 @@ import sdl2.ext
 from sdl2.sdlttf import TTF_OpenFont, TTF_RenderText_Solid
 
 from client import Client
+from controls.textinput import TextInput
 
 class Gui:
 	"""lobby gui"""
@@ -49,11 +54,14 @@ class Gui:
 		self.factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=self.renderer)
 		self.ManagerFont = sdl2.ext.FontManager(self.resources.get_path("tuffy.ttf"), size = 14)
 		self.uifactory = sdl2.ext.UIFactory(self.factory)
+		self.uiprocessor = sdl2.ext.UIProcessor()
 		
 		self.spriterenderer = self.factory.create_sprite_render_system(self.window)
 		
-		self.background = self.factory.from_image(self.resources.get_path("background.png"))
 		
+		self.textinputtest = TextInput(self.renderer, self.resources, "username0", "Usename", 400, 200)
+		
+		self.background = self.factory.from_image(self.resources.get_path("background.png"))
 		
 		self.auxwindow = self.factory.from_image(self.resources.get_path("auxwin.png"))
 		self.chatoutput = self.factory.from_image(self.resources.get_path("chatoutput.png"))
@@ -171,9 +179,11 @@ class Gui:
 						if key == b'escape':
 							self.running = 0
 							break
-					self.uiprocessor.dispatch([self.buttonconnect, self.buttonexit], event)
-				self.spriterenderer.render((self.background, self.buttonconnect, self.buttonexit))
-
+					
+					self.uiprocessor.dispatch([self.buttonconnect, self.buttonexit, self.textinputtest.getevents()], event)
+				self.spriterenderer.render((self.background, self.buttonconnect, self.buttonexit, self.textinputtest.drawlabel(), self.textinputtest.drawbox(), self.textinputtest.drawtext() ))
+				
+				
 			if self.page == 1:
 				""" Login Page """
 				
