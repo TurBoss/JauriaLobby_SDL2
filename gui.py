@@ -21,7 +21,9 @@ import sdl2.ext
 from sdl2.sdlttf import TTF_OpenFont, TTF_RenderText_Solid
 
 from client import Client
-from controls.textinput import TextInput
+
+from controls.textinput	import TextInput
+from controls.button 	import Button
 
 class Gui:
 	"""lobby gui"""
@@ -59,7 +61,17 @@ class Gui:
 		self.spriterenderer = self.factory.create_sprite_render_system(self.window)
 		
 		
-		self.textinputtest = TextInput(self.renderer, self.resources, "username0", "Usename", 400, 200)
+		self.textinputusername 	= TextInput(self.renderer, self.resources, "username0", "Usename", 450, 260)
+		self.textinputpassword	= TextInput(self.renderer, self.resources, "password0", "Password", 450, 330)
+		self.textinputpassword2	= TextInput(self.renderer, self.resources, "password1", "Password", 450, 400)
+		
+		self.buttonconnect		= Button(self.renderer, self.resources, "connect0", "Conect", 450, 500, self.onclickconnect)
+		self.buttonexit			= Button(self.renderer, self.resources, "exit0", "Exit", 450, 560, self.onclickexit)
+		
+		self.buttonlogin		= Button(self.renderer, self.resources, "login0", "Login", 450, 440, self.onclicklogin)
+		self.buttonregister		= Button(self.renderer, self.resources, "register0", "Register", 450, 500, self.onclickreg)
+		self.buttonback			= Button(self.renderer, self.resources, "back0", "Back", 450, 560, self.onclickback)
+		
 		
 		self.background = self.factory.from_image(self.resources.get_path("background.png"))
 		
@@ -91,66 +103,41 @@ class Gui:
 		self.chatout = self.factory.from_text(" ",
 									fontmanager=self.ManagerFont)
 
-		self.buttonconnect = self.uifactory.from_image(sdl2.ext.BUTTON,
-									self.resources.get_path("connect.png"))
-		self.buttonexit = self.uifactory.from_image(sdl2.ext.BUTTON,
-									self.resources.get_path("exit.png"))
-		self.buttonback = self.uifactory.from_image(sdl2.ext.BUTTON,
-									self.resources.get_path("back.png"))
-		self.buttonlogin = self.uifactory.from_image(sdl2.ext.BUTTON,
-									self.resources.get_path("button.png"))
-		self.buttonreg = self.uifactory.from_image(sdl2.ext.BUTTON,
-									self.resources.get_path("register.png"))
-		
-		self.textinputusername = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
-									self.resources.get_path("textinput.png"))
-		self.textinputpassword = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
-									self.resources.get_path("textinput.png"))
-		self.textinputpassword2 = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
-									self.resources.get_path("textinput.png"))
-		self.textinputchat = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
-									self.resources.get_path("chatinput.png"))
+		#self.textinputusername = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
+		#							self.resources.get_path("textinput.png"))
+		##self.textinputpassword = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
+		#							self.resources.get_path("textinput.png"))
+		#self.textinputpassword2 = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
+		#							self.resources.get_path("textinput.png"))
+		#self.textinputchat = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
+		#							self.resources.get_path("chatinput.png"))
 		
 		
-		# Button Events
-		self.buttonconnect.click += self.onclickconnect
-		self.buttonexit.click += self.onclickexit
-		self.buttonback.click += self.onclickback
-		self.buttonlogin.click += self.onclicklogin
-		self.buttonreg.click += self.onclickreg
-		
-		# Button positions
-		self.buttonconnect.position = 450, 500
-		self.buttonexit.position = 450, 560
-		
-		self.buttonlogin.position = 450, 440
-		self.buttonreg.position = 450, 500
-		self.buttonback.position = 450, 560
 		
 		# Textinput Events
-		self.textinputusername.input += self.inputusername
-		self.textinputpassword.input += self.inputpassword
-		self.textinputpassword2.input += self.inputpassword2
-		self.textinputchat.input += self.inputchat
+		#self.textinputusername.input += self.inputusername
+		#self.textinputpassword.input += self.inputpassword
+		#self.textinputpassword2.input += self.inputpassword2
+		#self.textinputchat.input += self.inputchat
 		
-		self.textinputusername.pressed += self.inputusername
-		self.textinputpassword.pressed += self.inputpassword
-		self.textinputpassword2.pressed += self.inputpassword2
-		self.textinputchat.pressed += self.inputchat
+		#self.textinputusername.pressed += self.inputusername
+		#self.textinputpassword.pressed += self.inputpassword
+		#self.textinputpassword2.pressed += self.inputpassword2
+		#self.textinputchat.pressed += self.inputchat
 		
 		# Textinput position
-		self.textinputusername.position = 450, 260
-		self.textinputpassword.position = 450, 330
-		self.textinputpassword2.position = 450, 400
-		self.textinputchat.position = 400, 400
+		#self.textinputusername.position = 450, 260
+		#self.textinputpassword.position = 450, 330
+		#self.textinputpassword2.position = 450, 400
+		#self.textinputchat.position = 400, 400
 		
 		# Text posiotion
-		self.tagusername.position = 450, 240
-		self.tagpassword.position = 450, 310
-		self.emptyuserpass.position = 400, 300
-		self.registrationdenied.position = 400,300
-		self.serverdown.position = 400, 300
-		self.invalidpassword.position = 400, 300
+		#self.tagusername.position = 450, 240
+		#self.tagpassword.position = 450, 310
+		#self.emptyuserpass.position = 400, 300
+		#self.registrationdenied.position = 400,300
+		#self.serverdown.position = 400, 300
+		#self.invalidpassword.position = 400, 300
 		
 		# Window position
 		self.auxwindow.position = 400, 300
@@ -159,7 +146,6 @@ class Gui:
 		
 		self.spriterenderer.render((self.background))
 		
-		self.uiprocessor = sdl2.ext.UIProcessor()
 		
 		self.start = sdl2.SDL_GetTicks()
 		
@@ -180,8 +166,18 @@ class Gui:
 							self.running = 0
 							break
 					
-					self.uiprocessor.dispatch([self.buttonconnect, self.buttonexit, self.textinputtest.getevents()], event)
-				self.spriterenderer.render((self.background, self.buttonconnect, self.buttonexit, self.textinputtest.drawlabel(), self.textinputtest.drawbox(), self.textinputtest.drawtext() ))
+					self.uiprocessor.dispatch([
+									self.buttonconnect.getevents(event),
+									self.buttonexit.getevents(event)
+									], event)
+									
+				self.spriterenderer.render((
+								self.background,
+								self.buttonconnect.drawbox(),
+								self.buttonconnect.drawlabel(),
+								self.buttonexit.drawbox(),
+								self.buttonexit.drawlabel()
+								))
 				
 				
 			if self.page == 1:
@@ -197,35 +193,33 @@ class Gui:
 						if key == b'escape':
 							self.page= 0
 							break
-						if key == b'backspace':
-							self.delval()
-							break
-					self.uiprocessor.dispatch([self.textinputusername,
-							self.textinputpassword, self.buttonlogin,
-							self.buttonreg, self.buttonback], event)
+					self.uiprocessor.dispatch([
+									self.textinputusername.getevents(event),
+									self.textinputpassword.getevents(event),
+									self.buttonlogin.getevents(event),
+									self.buttonregister.getevents(event),
+									self.buttonback.getevents(event)
+									], event)
 				
-					if self.client.username != "":
-						self.textentryusername = self.factory.from_text(self.client.username, fontmanager=self.ManagerFont)
-						self.textentryusername.position = 460,275
-					elif self.client.username == "":
-						self.textentryusername = self.factory.from_text(" ", fontmanager=self.ManagerFont)
-						self.textentryusername.position = 460,275
-						
-					if self.client.password != "":
-						self.textentrypassword = self.factory.from_text(self.client.password, fontmanager=self.ManagerFont)
-						self.textentrypassword.position = 460,345
-					elif self.client.password == "":
-						self.textentrypassword = self.factory.from_text(" ", fontmanager=self.ManagerFont)
-						self.textentrypassword.position = 460,345
-						
-						
-						
-				self.spriterenderer.render((self.background, self.tagusername,
-						self.tagpassword, self.textinputusername,
-						self.textinputpassword, self.textentryusername,
-						self.textentrypassword, self.buttonlogin,
-						self.buttonreg, self.buttonback))
+				self.spriterenderer.render((
+								self.background,
+								self.textinputusername.drawlabel(),
+								self.textinputusername.drawbox(),
+								self.textinputusername.drawtext(),
+								self.textinputpassword.drawlabel(),
+								self.textinputpassword.drawbox(),
+								self.textinputpassword.drawtext(),
+								self.buttonlogin.drawbox(),
+								self.buttonlogin.drawlabel(),
+								self.buttonregister.drawbox(),
+								self.buttonregister.drawlabel(),
+								self.buttonback.drawbox(),
+								self.buttonback.drawlabel(),
+								))
 			
+				self.client.username = self.textinputusername.gettext()
+				self.client.password = self.textinputpassword.gettext()
+				
 			if self.page == 2:
 				""" Register Page """
 				
@@ -242,40 +236,31 @@ class Gui:
 						if key == b'backspace':
 							self.delval()
 							break
-					self.uiprocessor.dispatch([self.textinputusername,
-							self.textinputpassword, self.textinputpassword2,
-							self.buttonreg, self.buttonback], event)
+					self.uiprocessor.dispatch([
+									self.textinputusername.getevents(event),
+									self.textinputpassword.getevents(event),
+									self.textinputpassword2.getevents(event),
+									self.buttonregister.getevents(event),
+									self.buttonback.getevents(event)
+								], event)
 				
-					if self.client.username != "":
-						self.textentryusername = self.factory.from_text(self.client.username, fontmanager=self.ManagerFont)
-						self.textentryusername.position = 460,275
-					elif self.client.username == "":
-						self.textentryusername = self.factory.from_text(" ", fontmanager=self.ManagerFont)
-						self.textentryusername.position = 460,275
-						
-					if self.client.password != "":
-						self.textentrypassword = self.factory.from_text(self.client.password, fontmanager=self.ManagerFont)
-						self.textentrypassword.position = 460,345
-					elif self.client.password == "":
-						self.textentrypassword = self.factory.from_text(" ", fontmanager=self.ManagerFont)
-						self.textentrypassword.position = 460,345
-						
-					if self.client.password2 != "":
-						self.textentrypassword2 = self.factory.from_text(self.client.password2, fontmanager=self.ManagerFont)
-						self.textentrypassword2.position = 460,415
-					elif self.client.password2 == "":
-						self.textentrypassword2 = self.factory.from_text(" ", fontmanager=self.ManagerFont)
-						self.textentrypassword2.position = 460,415
-						
-						
-						
-						
-				self.spriterenderer.render((self.background,
-						self.tagusername, self.tagpassword,
-						self.textinputusername, self.textinputpassword,
-						self.textinputpassword2, self.textentryusername,
-						self.textentrypassword, self.textentrypassword2,
-						self.buttonreg, self.buttonback))
+				self.spriterenderer.render((
+							self.background,
+							
+								self.textinputusername.drawlabel(),
+								self.textinputusername.drawbox(),
+								self.textinputusername.drawtext(),
+								self.textinputpassword.drawlabel(),
+								self.textinputpassword.drawbox(),
+								self.textinputpassword.drawtext(),
+								self.textinputpassword2.drawlabel(),
+								self.textinputpassword2.drawbox(),
+								self.textinputpassword2.drawtext(),
+								self.buttonregister.drawbox(),
+								self.buttonregister.drawlabel(),
+								self.buttonback.drawbox(),
+								self.buttonback.drawlabel(),
+							))
 						
 			if self.page == 3:
 				""" Lobby Page """
@@ -309,9 +294,9 @@ class Gui:
 						
 				self.spriterenderer.render((self.background,self.chatoutput,
 						self.buttonback, self.textinputchat, self.textentrychat))
-			sdl2.SDL_Delay(1)
+			sdl2.SDL_Delay(30)
 
-	def onclickconnect(self, button, event,):
+	def onclickconnect(self, button, event):
 		self.page = 1
 	
 	def onclickexit(self, button, event):

@@ -45,8 +45,8 @@ class TextInput:
 		self.textinput = self.uifactory.from_image(sdl2.ext.TEXTENTRY,
 									self.resources.get_path("textinput.png"))
 		
-		self.textinput.input += self.inputtext
-		self.textinput.pressed += self.inputtext
+		self.textinput.input 			+= self.inputtext
+		self.textinput.pressed			+= self.inputtext
 		
 		self.textlabel.position			= self.posx+5, self.posy-20
 		self.text.position 				= self.posx+5, self.posy+15
@@ -60,17 +60,23 @@ class TextInput:
 			char = event.text.text
 			self.textmsg += char.decode("utf-8")
 			
-	def getevents(self):
+	def getevents(self, event):
+
+		if event.type == sdl2.SDL_KEYDOWN:
+			key = sdl2.SDL_GetKeyName(event.key.keysym.sym).lower()
+			if key == b'backspace':
+				self. delval()
 		return self.textinput
 		
 	def updatetext(self):
+	
 		if self.textmsg != "":
 			self.text = self.factory.from_text(self.textmsg,
-									fontmanager=self.ManagerFont)
+							fontmanager=self.ManagerFont)
 		else:
 			self.text = self.factory.from_text(" ",
-									fontmanager=self.ManagerFont)
-		self.text.position 				= self.posx+5, self.posy+15
+							fontmanager=self.ManagerFont)
+		self.text.position = self.posx+5, self.posy+15
 	
 	def drawlabel(self):
 		return self.textlabel
@@ -84,3 +90,6 @@ class TextInput:
 	
 	def delval(self):
 		self.textmsg = self.textmsg[:-1]
+		
+	def gettext(self):
+		return self.textmsg
