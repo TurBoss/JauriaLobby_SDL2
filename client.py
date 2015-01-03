@@ -1,14 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+
 import os
 import time
 import socket
 import traceback
-
 
 from threading import Thread
 from utilities import *
 from customlog import Log
 from clientobjects import (User, Channel, ChannelList,
 			Motd, ServerEvents, Flags)
+
+
 
 class Client:
 	"""main client object"""
@@ -20,7 +25,7 @@ class Client:
 		self.updateThread = Thread(target=self.monitor)
 		self.updateThread.daemon = True	
 		
-		self.server = "lobby.springrts.com" #"192.168.8.100"
+		self.server = "192.168.8.107" #"lobby.springrts.com"
 		self.port = "8200"
 		
 		self.connected = False
@@ -43,8 +48,6 @@ class Client:
 			phash = hash_password(self.password)
 			msg = ("LOGIN %s %s %i %s %s\t0\t%s\n" %
 								(self.username, phash.decode('utf-8'), self.cpu, self.lanip, self.client, "a sp"))
-			
-			
 			
 			try:
 				self.socket.sendall(msg.encode('utf-8'))
@@ -125,63 +128,63 @@ class Client:
 				if not args[0] in self.channels:
 					self.channels.add(args[0])
 					Log.good("Joined #%s" % args[0])
-			if command == "FORCELEAVECHANNEL" and len(args) >= 2:
+			elif command == "FORCELEAVECHANNEL" and len(args) >= 2:
 				if args[0] in self.channels:
 					self.channels.remove(args[0])
 					Log.bad("I've been kicked from #%s by <%s>" % (args[0], args[1]))
 				else:
 					Log.error("I've been kicked from a channel that i haven't joined")
-			if command == "TASSERVER":
+			elif command == "TASSERVER":
 				Log.good("Connected to server")
 				if self.flags.register:
 					self.register(self.uname, self.password)
 					self.receive()
 				else:
 					self.events.onconnected()
-			if command == 'LEFT':
+			elif command == 'LEFT':
 				chan = args[0]
 				nick = args[1]
 				self.channels[chan].del_user(self.users[nick])
-			if command == 'JOINED':
+			elif command == 'JOINED':
 				chan = args[0]
 				nick = args[1]
 				self.channels[chan].add_user(self.users[nick])
-			if command == 'CLIENTS':
+			elif command == 'CLIENTS':
 				chan = args[0]
 				for nick in args[1:]:
 					self.channels[chan].add_user(self.users[nick])
-			if command == "AGREEMENTEND":
+			elif command == "AGREEMENTEND":
 				Log.notice("accepting agreement")
 				self.socket.send("CONFIRMAGREEMENT\n")
 				self.login(self.uname, self.password, "BOT", 2000)
 				self.events.onloggedin(self.socket)
-			if command == "MOTD":
+			elif command == "MOTD":
 				self.events.onmotd(" ".join(args))
-			if command == "ACCEPTED":
+			elif command == "ACCEPTED":
 				self.connected = True
-			if command == "DENIED" and ' '.join(args).lower().count("already") == 0:
+			elif command == "DENIED" and ' '.join(args).lower().count("already") == 0:
 				print("Login failed ( %s ), trying to register..." % ' '.join(args))
 				print("Closing Connection")
 				self.socket.close()
 				self.flags.register = True
 				self.connect(self.lastserver, self.lastport)
-			if command == "REGISTRATIONACCEPTED":
+			elif command == "REGISTRATIONACCEPTED":
 				print("Registered")
 				print("Closing Connection")
 				self.socket.close()
 				self.flags.register = False
 				self.connect(self.lastserver, self.lastport)
-			if command == "PONG":
+			elif command == "PONG":
 				self.lpo = time.time()
 				self.events.onpong()
-			if command == "JOINEDBATTLE" and len(args) >= 2:
+			elif command == "JOINEDBATTLE" and len(args) >= 2:
 				try:
 					self.users[args[1]].battleid = int(args[0])
 				except Exception:
 					Log.error("Invalid JOINEDBATTLE Command from server: %s %s" %
 								(command, str(args)))
 					Log.error(traceback.format_exc())
-			if command == "BATTLEOPENED" and len(args) >= 4:
+			elif command == "BATTLEOPENED" and len(args) >= 4:
 				self.users[args[3]].battleid = int(args[0])
 				try:
 					self.users[args[3]].battleid = int(args[0])
@@ -189,16 +192,16 @@ class Client:
 					print("Invalid BATTLEOPENED Command from server: %s %s" %
 								(command, str(args)))
 					print(traceback.format_exc())
-			if command == "LEFTBATTLE" and len(args) >= 2:
+			elif command == "LEFTBATTLE" and len(args) >= 2:
 				try:
 					self.users[args[1]].battleid = -1
 				except Exception:
 					Log.error("Invalid LEFTBATTLE Command from server: %s %s" %
 								(command, str(args)))
 					Log.error(traceback.format_exc())
-			if command == "SAIDPRIVATE" and len(args) >= 2:
+			elif command == "SAIDPRIVATE" and len(args) >= 2:
 				self.events.onsaidprivate(args[0], ' '.join(args[1:]))
-			if command == "ADDUSER":
+			elif command == "ADDUSER":
 				try:
 					if len(args) == 4:
 						#Account id
@@ -212,7 +215,7 @@ class Client:
 					print("Invalid ADDUSER Command from server: %s %s" %
 								(command, str(args)))
 					print(e)
-			if command == "REMOVEUSER":
+			elif command == "REMOVEUSER":
 				if len(args) == 1:
 					if args[0] in self.users:
 						self.channels.clear_user(self.users[args[0]])
@@ -221,7 +224,7 @@ class Client:
 						print("Invalid REMOVEUSER Command: no such user %s" % args[0])
 				else:
 						Log.error("Invalid REMOVEUSER Command: not enough arguments")
-			if command == "CLIENTSTATUS":
+			elif command == "CLIENTSTATUS":
 				if len(args) == 2:
 					if args[0] in self.users:
 						try:

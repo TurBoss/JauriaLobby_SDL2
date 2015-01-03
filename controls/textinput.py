@@ -22,7 +22,7 @@ from sdl2.sdlttf import TTF_OpenFont, TTF_RenderText_Solid
 
 class TextInput:
 	"""Text Input"""
-	def __init__(self, renderer, resources, textinputid, label , posx, posy):
+	def __init__(self, renderer, resources, textinputid, label, posx, posy, textmsg=""):
 		
 		self.renderer = renderer
 		self.resources = resources
@@ -30,15 +30,23 @@ class TextInput:
 		self.textinputid = textinputid
 		
 		self.label = label
+		self.textmsg = textmsg
 		self.posx = posx
 		self.posy = posy
-		
+				
 		self.factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=self.renderer)
 		self.ManagerFont = sdl2.ext.FontManager(self.resources.get_path("tuffy.ttf"), size = 14)
 		self.uifactory = sdl2.ext.UIFactory(self.factory)
 		
-		self.text = self.factory.from_text(" ",
-									fontmanager=self.ManagerFont)
+		
+		
+		if self.textmsg == "":
+			self.text = self.factory.from_text(" ",
+										fontmanager=self.ManagerFont)
+		else:
+			self.text = self.factory.from_text(self.textmsg,
+										fontmanager=self.ManagerFont)
+										
 		self.textlabel = self.factory.from_text(self.label,
 									fontmanager=self.ManagerFont)
 									
@@ -52,7 +60,6 @@ class TextInput:
 		self.text.position 				= self.posx+5, self.posy+15
 		self.textinput.position			= self.posx, self.posy
 		
-		self.textmsg = ""
 		
 	def inputtext(self, entry, event):
 		
@@ -70,11 +77,11 @@ class TextInput:
 		
 	def updatetext(self):
 	
-		if self.textmsg != "":
-			self.text = self.factory.from_text(self.textmsg,
+		if self.textmsg == "":
+			self.text = self.factory.from_text(" ",
 							fontmanager=self.ManagerFont)
 		else:
-			self.text = self.factory.from_text(" ",
+			self.text = self.factory.from_text(self.textmsg,
 							fontmanager=self.ManagerFont)
 		self.text.position = self.posx+5, self.posy+15
 	
