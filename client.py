@@ -7,9 +7,9 @@ import time
 import socket
 import traceback
 
+from threading import Timer
 from threading import Thread
 from utilities import *
-from customlog import Log
 from clientobjects import (User, Channel, ChannelList,
 			Motd, ServerEvents, Flags)
 
@@ -25,7 +25,7 @@ class Client:
 		self.updateThread = Thread(target=self.monitor)
 		self.updateThread.daemon = True	
 		
-		self.server = "192.168.8.107" #"lobby.springrts.com"
+		self.server =  "lobby.springrts.com"#"192.168.8.107" #"lobby.springrts.com"
 		self.port = "8200"
 		
 		self.connected = False
@@ -35,7 +35,6 @@ class Client:
 		self.cpu = 1
 		self.lanip = ""
 		self.client = ""
-		self.channels = ""
 		self.chatinput= ""
 		self.users = dict()
 		
@@ -175,15 +174,16 @@ class Client:
 				self.flags.register = False
 				self.connect(self.lastserver, self.lastport)
 			elif command == "PONG":
+				print("PONG")
 				self.lpo = time.time()
 				self.events.onpong()
 			elif command == "JOINEDBATTLE" and len(args) >= 2:
 				try:
 					self.users[args[1]].battleid = int(args[0])
 				except Exception:
-					Log.error("Invalid JOINEDBATTLE Command from server: %s %s" %
+					print("Invalid JOINEDBATTLE Command from server: %s %s" %
 								(command, str(args)))
-					Log.error(traceback.format_exc())
+					print(traceback.format_exc())
 			elif command == "BATTLEOPENED" and len(args) >= 4:
 				self.users[args[3]].battleid = int(args[0])
 				try:
@@ -196,9 +196,9 @@ class Client:
 				try:
 					self.users[args[1]].battleid = -1
 				except Exception:
-					Log.error("Invalid LEFTBATTLE Command from server: %s %s" %
+					print("Invalid LEFTBATTLE Command from server: %s %s" %
 								(command, str(args)))
-					Log.error(traceback.format_exc())
+					print(traceback.format_exc())
 			elif command == "SAIDPRIVATE" and len(args) >= 2:
 				self.events.onsaidprivate(args[0], ' '.join(args[1:]))
 			elif command == "ADDUSER":
@@ -233,12 +233,24 @@ class Client:
 							print("Malformed CLIENTSTATUS")
 							print(traceback.format_exc())
 					else:
-						Log.error("Invalid CLIENTSTATUS: No such user <%s>" % args[0])	
+						print("Invalid CLIENTSTATUS: No such user <%s>" % args[0])
+	
+	def start_timer(self):
+		Timer(60, self.ping_server, ()).start()
+		
 	def monitor(self):
+		self.start_timer()
 		
 		while(True):
 			self.receive()
-
+	
+	def ping_server(self):
+		print("PING")
+		self.start_timer()
+		msg = ("PING")
+		self.socket.sendall(msg.encode('utf-8'))
+		self.receive()
+	
 	def receive(self):
 		"""return commandname & args"""
 		if not self.socket:
@@ -248,7 +260,7 @@ class Client:
 			while not buf.strip("\r ").endswith("\n"):
 				print ("Receiving incomplete command...")
 				nbuf = self.socket.recv(512)
-				#print(nbuf)
+				print(nbuf)
 				if nbuf == "":
 					return 1
 				buf += nbuf.decode("utf-8")
@@ -261,6 +273,7 @@ class Client:
 			c = cmd.split(" ")[0].upper()
 			args = cmd.split(" ")[1:]
 			print(c)
+			print(args)
 			#print(args)
 			self.parsecommand(c, args)
 		return 0

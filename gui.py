@@ -91,7 +91,7 @@ class Gui:
 		
 		self.serverdown_popup	= PopUp(		self.renderer, self.resources, "popup0", "Server Down", "Connection to server Timeout", 300,110)
 		self.denied_popup		= PopUp(		self.renderer, self.resources, "popup1", "Denied", "Invalid Username or password", 300,110)
-		self.empty_popup		= PopUp(		self.renderer, self.resources, "popup2", "Denied", "Missing Username or password", 300,110)
+		self.empty_popup		= PopUp(		self.renderer, self.resources, "popup2", "Empty", "Missing Username or password", 300,110)
 
 		# =============================================================================
 		
@@ -103,10 +103,6 @@ class Gui:
 		self.serverdown = self.factory.from_text("Server Down",
 									fontmanager=self.ManagerFont)
 		self.invalidpassword = self.factory.from_text("Invalid username or password",
-									fontmanager=self.ManagerFont)
-		self.textentrychat= self.factory.from_text(" ",
-									fontmanager=self.ManagerFont)
-		self.chatout = self.factory.from_text(" ",
 									fontmanager=self.ManagerFont)
 		
 		

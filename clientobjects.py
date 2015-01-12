@@ -1,6 +1,5 @@
 from utilities import (getaway, getingame, getmod,
 					getbot, getrank )
-from customlog import Log
 
 class User(object):
 	"""Model of an agent in the lobby protocol"""
@@ -59,7 +58,7 @@ class ChannelList(object):
 		return self._channels[key]
 
 	def clear_user(self,user):
-		for channel in self._channels.itervalues():
+		for channel in self._channels.values():
 			try:
 				channel.del_user(user)
 			except ValueError:
@@ -69,28 +68,28 @@ class ServerEvents:
 		self.motd=Motd()
 	
 	def onconnected(self):
-		Log.good("Connected to TASServer")
+		print("Connected to TASServer")
 
 	def onconnectedplugin(self):
-		Log.good("Connected to TASServer")
+		print("Connected to TASServer")
 
 	def ondisconnected(self):
-		Log.bad("Disconnected")
+		print("Disconnected")
 
 	def onmotd(self, content):
 		self.motd.add_line("[MOTD] %s" % content)
 
 	def onsaid(self, channel, user, message):
-		Log.info("[CHANNEL] %s: <%s> %s" % (channel, user, message))
+		print("[CHANNEL] %s: <%s> %s" % (channel, user, message))
 
 	def onsaidex(self, channel, user, message):
-		Log.info("[CHANNELEX] %s: <%s> %s" % (channel, user, message))
+		print("[CHANNELEX] %s: <%s> %s" % (channel, user, message))
 
 	def onsaidprivate(self, user, message):
-		Log.info("[PRIVATE] <%s> %s" % (user, message))
+		print("[PRIVATE] <%s> %s" % (user, message))
 
 	def onloggedin(self, socket):
-		Log.info("[LOGIN] successful")
+		print("[LOGIN] successful")
 
 	def onpong(self):
 		#print blue+"PONG"+normal
